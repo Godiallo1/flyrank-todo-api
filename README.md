@@ -32,5 +32,10 @@ content-type: application/json
 ## 5. Swagger UI Testing
 Here are the results from testing the endpoints directly in the UI:
 
-![Swagger POST Request](Swagger-UI-1.png)
-![Swagger GET Request](Swagger-UI-2.png)
+## 5. Swagger UI Testing
+Here are the results from testing the endpoints directly in the UI:
+
+<p align="center">
+  <img src="swagger-UI-1.png" width="45%" />
+  <img src="swagger-UI-2.png" width="45%" />
+</p>
