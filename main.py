@@ -36,6 +36,7 @@ def get_task(task_id: int, response: Response):
     response.status_code = 404
     return {"error": f"Task {task_id} not found"}
 
+#Stage 3
 @app.post("/tasks")
 def create_task(response: Response, payload: dict = Body(default={})):
     # 1. Validate the input
@@ -61,3 +62,49 @@ def create_task(response: Response, payload: dict = Body(default={})):
     # 4. Return the 201 Created status and the task
     response.status_code = 201
     return new_task
+
+#STAGE 4
+
+@app.put("/tasks/{task_id}")
+def update_task(task_id: int, response: Response, payload: dict = Body(default={})):
+    # 1. Find the task
+    task_to_update = None
+    for task in tasks:
+        if task["id"] == task_id:
+            task_to_update = task
+            break
+            
+    if not task_to_update:
+        response.status_code = 404
+        return {"error": f"Task {task_id} not found"}
+        
+    # 2. Validate the input (Empty body = 400)
+    if not payload:
+        response.status_code = 400
+        return {"error": "Empty request body"}
+        
+    # 3. Update the fields if they were provided
+    if "title" in payload:
+        title = payload["title"].strip()
+        if not title:
+            response.status_code = 400
+            return {"error": "Title cannot be empty"}
+        task_to_update["title"] = title
+        
+    if "done" in payload:
+        task_to_update["done"] = payload["done"]
+        
+    return task_to_update
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int, response: Response):
+    # Enumerate gives us both the index (i) and the task
+    for i, task in enumerate(tasks):
+        if task["id"] == task_id:
+            tasks.pop(i)
+            # 204 No Content means we return nothing but the status
+            response.status_code = 204
+            return Response(status_code=204)
+            
+    response.status_code = 404
+    return {"error": f"Task {task_id} not found"}
