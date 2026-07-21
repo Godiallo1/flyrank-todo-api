@@ -29,8 +29,6 @@ server: uvicorn
 content-length: 131
 content-type: application/json
 
-## 5. Swagger UI Testing
-Here are the results from testing the endpoints directly in the UI:
 
 ## 5. Swagger UI Testing
 Here are the results from testing the endpoints directly in the UI:
@@ -39,3 +37,17 @@ Here are the results from testing the endpoints directly in the UI:
   <img src="swagger-UI-1.png" width="45%" />
   <img src="swagger-UI-2.png" width="45%" />
 </p>
+
+## 6. The AI Rematch
+
+**What did the AI do better than me?**
+The AI wrote more modular code by creating a reusable `get_task_by_id` helper function. It also utilized Pydantic models to strictly define the data structures instead of relying on loose dictionaries.
+
+**What did it get wrong or quietly ignore from the prompt?**
+The AI failed the strict 400 Bad Request validation rule for empty titles[cite: 1]. It used Pydantic validators that raise a ValueError, which causes FastAPI to automatically return a 422 Unprocessable Entity before the 400 error logic can ever be triggered. 
+
+**What did my prompt forget to specify, leaving the AI to decide?**
+I forgot to specify the starting data and the exact dictionary keys. Left to decide for itself, the AI started with a completely empty list and used "completed" as the boolean key instead of "done".
+
+**The Rematch:**
+I explicitly told ChatGPT: "Your Pydantic validator returns a 422 error, but I strictly need a 400 Bad Request when the title is empty. Please adjust the validation to return a 400, use 'done' instead of 'completed', and pre-fill the list with three dummy tasks." The second version successfully captured the 400 error manually without the Pydantic validator blocking it.
